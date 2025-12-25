@@ -1,0 +1,71 @@
+# Set black background
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
+
+# Get screen dimensions
+screen_width = Window.GetWidth();
+screen_height = Window.GetHeight();
+
+bullet_image = Image("bullet.png");
+bullet_width = bullet_image.GetWidth();
+bullet_height = bullet_image.GetHeight();
+global.bullet_sprites = [];
+
+# Password dialog setup
+fun display_password_callback(prompt, bullets) {
+    if (global.prompt_sprite) global.prompt_sprite.SetOpacity(0);
+    for (i = 0; global.bullet_sprites[i]; i++) {
+        global.bullet_sprites[i].SetOpacity(0);
+    }
+    global.bullet_sprites = [];
+    prompt_image = Image.Text(prompt, 1, 1, 1);
+    prompt_sprite = Sprite(prompt_image);
+    prompt_sprite.SetX(screen_width / 2 - prompt_image.GetWidth() / 2);
+    prompt_sprite.SetY(screen_height / 2 - 30);
+    global.prompt_sprite = prompt_sprite;
+    
+
+    if (bullets > 0) {
+        spacing = 5;
+        total_width = (bullets * bullet_width) + ((bullets - 1) * spacing);
+        start_x = screen_width / 2 - total_width / 2;
+        bullet_y = screen_height / 2 + 10;
+        for (i = 0; i < bullets; i++) {
+            bullet_sprite = Sprite(bullet_image);
+            bullet_sprite.SetX(start_x + (i * (bullet_width + spacing)));
+            bullet_sprite.SetY(bullet_y);
+            global.bullet_sprites[i] = bullet_sprite;
+        }
+    }
+}
+
+fun display_normal_callback(prompt, entry) {
+    display_password_callback(prompt, 0);
+}
+
+fun password_status_callback(prompt, bullets) {
+    display_password_callback(prompt, bullets);
+}
+
+fun message_callback(text) {
+    if (global.message_sprite) global.message_sprite.SetOpacity(0);
+    if (text != "") {
+        message_image = Image.Text(text, 1, 0, 0); # Red text for errors
+        message_sprite = Sprite(message_image);
+        
+        message_sprite.SetX(screen_width / 2 - message_image.GetWidth() / 2);
+        message_sprite.SetY(screen_height / 2 + 50);
+        
+        global.message_sprite = message_sprite;
+    }
+}
+
+Plymouth.SetDisplayPasswordFunction(display_password_callback);
+Plymouth.SetDisplayNormalFunction(display_normal_callback);
+Plymouth.SetMessageFunction(message_callback);
+
+fun refresh_callback() {
+    # Keep black screen
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);

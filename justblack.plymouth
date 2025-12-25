@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Just Black
+Description=Minimal black screen with centered password prompt
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/justblack
+ScriptFile=/usr/share/plymouth/themes/black-minimal/justblack.script
